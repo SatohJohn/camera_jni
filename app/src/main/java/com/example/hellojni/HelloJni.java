@@ -56,6 +56,8 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     private int[] mScaleImg = null;
     private Bitmap mBitmap = null;
 
+    private long mTimestart = System.currentTimeMillis();
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -160,6 +162,9 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             canvas.drawBitmap(mBitmap, 0, 0, null);
             mHolder.unlockCanvasAndPost(canvas);
         }
+        long end = System.currentTimeMillis();
+        Log.d(getClass().getName(), "Time: " + (end - mTimestart));
+        mTimestart = end;
     }
 
 
