@@ -8,7 +8,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.hellojni.adapter.VideoListAdapter;
+import com.example.hellojni.adapter.ShowAlbumListAdapter;
 import com.example.hellojni.model.Video;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class CreateAlbumActivity extends Activity {
         // TODO:Videoを組み立てる手段
         videos.add(new Video(moviewPath));
         ListView listView = (ListView) findViewById(R.id.create_album_activity_list);
-        listView.setAdapter(new VideoListAdapter(this, 0, videos));
+        listView.setAdapter(new ShowAlbumListAdapter(this, 0, videos));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

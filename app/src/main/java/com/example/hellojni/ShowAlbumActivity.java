@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.example.hellojni.adapter.VideoListAdapter;
+import com.example.hellojni.adapter.CreateAlbumListAdapter;
 import com.example.hellojni.model.Video;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class ShowAlbumActivity extends Activity {
         // TODO:Videoを組み立てる手段
         videos.add(new Video(moviewPath2));
         ListView listView = (ListView) findViewById(R.id.show_album_activity_list);
-        listView.setAdapter(new VideoListAdapter(this, 0, videos));
+        listView.setAdapter(new CreateAlbumListAdapter(this, 0, videos));
     }
 
     @Override

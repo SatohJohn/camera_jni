@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.example.hellojni.HelloJni;
@@ -20,11 +19,11 @@ import java.util.List;
 /**
  * データリストからリストビューを生み出すためのカスタムアダプター
  */
-public class VideoListAdapter extends ArrayAdapter<Video> {
+public class ShowAlbumListAdapter extends ArrayAdapter<Video> {
 
     LayoutInflater layoutInflater;
 
-    public VideoListAdapter(Context context, int resource, List<Video> objects) {
+    public ShowAlbumListAdapter(Context context, int resource, List<Video> objects) {
         super(context, 0, objects);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -32,7 +31,7 @@ public class VideoListAdapter extends ArrayAdapter<Video> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.template_video, null);
+            convertView = layoutInflater.inflate(R.layout.template_create_album_list, null);
         }
 
         Video data = getItem(position);
