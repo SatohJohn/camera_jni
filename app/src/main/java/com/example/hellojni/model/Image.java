@@ -9,4 +9,8 @@ public class Image {
     public Image(String path) {
         this.path = path;
     }
+
+    public boolean hasPath() {
+        return path != null && path.length() > 0;
+    }
 }

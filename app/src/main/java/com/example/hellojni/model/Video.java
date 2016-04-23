@@ -5,7 +5,12 @@ package com.example.hellojni.model;
  */
 public class Video {
     public String path;
+
     public Video(String path) {
         this.path = path;
+    }
+
+    public boolean hasPath() {
+        return path != null && path.length() > 0;
     }
 }
