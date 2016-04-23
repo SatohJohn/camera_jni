@@ -1,8 +1,15 @@
 #include <jni.h>
 #include <stdlib.h>
 
-static const int MAX_FRAME_BUFFER = 8;
-static unsigned char* g_FrameBuffer[MAX_FRAME_BUFFER];
+static const int MAX_FRAME_BUFFER = 4;
+static const int MAX_FRAME_MATCH = 16;
+static unsigned int* g_FrameBuffer[MAX_FRAME_BUFFER];
+static unsigned char* g_YFrameBuffer[MAX_FRAME_BUFFER];
+static unsigned short* g_SubFrameBuffer = NULL;
+static int g_FrameIndex = 0;
+static int g_ImageLength = 0;
+static int g_ImageWidth = 0;
+static int g_ImageHeight = 0;
 
 // yuv→argb 変換
 extern "C" void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobject obj, jintArray rgbArray, jbyteArray yuvArray, int width, int height)
@@ -65,9 +72,13 @@ extern "C" void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobjec
 
 extern "C" void Java_com_example_hellojni_HelloJni_initiaizeGraphics(JNIEnv* env, jobject obj, int width, int height)
 {
+    g_ImageLength = width*height;
+    g_ImageWidth = width;
+    g_ImageHeight = height;
     for (int i = 0; i < MAX_FRAME_BUFFER; ++i)
     {
-        g_FrameBuffer[i] = new unsigned char[width*height*2]; // YUV形式で保存
+        g_FrameBuffer[i] = new unsigned int[width*height];
+        g_YFrameBuffer[i] = new unsigned char[width*height];
     }
 }
 
@@ -77,5 +88,42 @@ extern "C" void Java_com_example_hellojni_HelloJni_releaseGraphics(JNIEnv* env, 
     {
         delete[] g_FrameBuffer[i];
         g_FrameBuffer[i] = NULL;
+
+        delete[] g_YFrameBuffer[i];
+        g_YFrameBuffer[i] = NULL;
     }
+}
+
+extern "C" void Java_com_example_hellojni_HelloJni_updateFrame(JNIEnv* env, jobject obj, jintArray rgbArray, jbyteArray yuvArray) {
+
+    jint *rgbImg = env->GetIntArrayElements(rgbArray, 0);
+    jbyte *yuvImg = env->GetByteArrayElements(yuvArray, 0);
+
+    memcpy(g_FrameBuffer[g_FrameIndex],rgbImg,g_ImageLength*sizeof(unsigned int));
+    memcpy(g_YFrameBuffer[g_FrameIndex],yuvImg,g_ImageLength*sizeof(unsigned char));
+
+    for( int i=0; i<g_ImageLength; ++i)
+    {
+        int match[MAX_FRAME_MATCH] = {};
+        int max = 0;
+        int max_index = 0;
+        for( int j=0; j<MAX_FRAME_BUFFER; ++j )
+        {
+            int value =g_YFrameBuffer[j][i]>>4;
+            match[value]++;
+
+            if( match[value] > max )
+            {
+                max = match[value];
+                max_index = j;
+            }
+        }
+        rgbImg[i] = g_FrameBuffer[max_index][i];
+    }
+
+    if (++g_FrameIndex >= MAX_FRAME_BUFFER) {
+        g_FrameIndex = 0;
+    }
+    env->ReleaseIntArrayElements(rgbArray, rgbImg, 0);
+    env->ReleaseByteArrayElements(yuvArray, yuvImg, 0);
 }

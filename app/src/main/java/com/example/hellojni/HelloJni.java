@@ -43,7 +43,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     private native void yuvtoargb(int[] out,byte[] in,  int width, int height);
     private native void initiaizeGraphics(int width, int height);
     private native void releaseGraphics();
-
+    private native void updateFrame(int[] rgb, byte[] yuv);
 
     private static int PREVIEW_WIDTH  = 640;
     private static int PREVIEW_HEIGHT = 480;
@@ -64,7 +64,6 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         SurfaceView preview = (SurfaceView) findViewById(R.id.preview_id);
         mHolder = preview.getHolder();
         mHolder.addCallback(this);
-        initiaizeGraphics(PREVIEW_WIDTH, PREVIEW_HEIGHT);
     }
 
     @Override
@@ -90,17 +89,11 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
                 bestSize = sizeList.get(cameraSizeIndex);
             }
         }
-        //PREVIEW_WIDTH  = bestSize.width;
-        //PREVIEW_HEIGHT = bestSize.height;
-
-        //DISP_WIDTH  = surfaceHolder.getSurfaceFrame().width();
-        //DISP_HEIGHT = surfaceHolder.getSurfaceFrame().height();
-
-        //Log.d("aaaaaaaaa", "" + surfaceHolder.getSurfaceFrame().width() + "," + surfaceHolder.getSurfaceFrame().height() + "," + bestSize.width + "," + bestSize.height);
 
         mGrayImg   = new int[PREVIEW_WIDTH * PREVIEW_HEIGHT];
         mScaleImg  = new int[DISP_WIDTH * DISP_HEIGHT];
         mBitmap = Bitmap.createBitmap(DISP_WIDTH, DISP_HEIGHT, Bitmap.Config.ARGB_8888);
+        initiaizeGraphics(PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) { // API Level 11以上
@@ -147,9 +140,8 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
-        int p;
-
         yuvtoargb(mGrayImg, bytes, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+        updateFrame( mGrayImg, bytes );
 
         for (int y = 0; y < DISP_HEIGHT; y++)
         {
@@ -159,7 +151,6 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
                 mScaleImg[y * DISP_WIDTH + x] = mGrayImg[p_y * PREVIEW_WIDTH + p_x];
             }
         }
-
 
         //mBitmap.setPixels(mGrayImg, 0, DISP_WIDTH, 0, 0, DISP_WIDTH, DISP_HEIGHT);
         mBitmap.setPixels(mScaleImg, 0, DISP_WIDTH, 0, 0, DISP_WIDTH, DISP_HEIGHT);
