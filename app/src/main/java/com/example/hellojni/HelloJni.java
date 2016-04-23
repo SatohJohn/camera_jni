@@ -64,6 +64,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
     private long mTimestart = System.currentTimeMillis();
     private boolean mTouch = false;
+    private int shotNumber = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -74,6 +75,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         mHolder = preview.getHolder();
         mHolder.addCallback(this);
         mTouch = false;
+        shotNumber = getIntent().getIntExtra("shotNumber", 0);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             return false;
         }
         mTouch = true;
-        final String SAVE_DIR = "/pashao/";
+        final String SAVE_DIR = String.valueOf(R.string.directory_name);
         File file = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
         try{
             if(!file.exists()){
@@ -97,7 +99,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
         Date mDate = new Date();
         SimpleDateFormat fileNameDate = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String fileName = fileNameDate.format(mDate) + ".png";
+        String fileName = fileNameDate.format(mDate) + "_" + shotNumber + ".png";
         String AttachName = file.getAbsolutePath() + "/" + fileName;
         Log.d("aaaaaaaaa", AttachName);
 

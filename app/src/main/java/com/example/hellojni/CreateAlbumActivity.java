@@ -1,7 +1,8 @@
 package com.example.hellojni;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,12 +29,12 @@ public class CreateAlbumActivity extends Activity {
     private String moviewPath = "/Movies/preload_xperia_hd2.mp4";
     private String imagePath = "/image/alpha_amalfi_coast.jpg";
 
-    LinearLayout linearLayout;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_album_activity);
+
+        Integer i = getTokenImageNum();
 
         // TODO:Videoを組み立てる手段
         List<Album> albums = new ArrayList<>();
@@ -41,33 +42,48 @@ public class CreateAlbumActivity extends Activity {
             albums.add(new Album(new Video(moviewPath), new Image("")));
             albums.add(new Album(new Video(""), new Image(imagePath)));
             albums.add(new Album(new Video(""), new Image("")));
+            albums.add(new Album(new Video(""), new Image("")));
+            albums.add(new Album(new Video(""), new Image("")));
+        }
+        if (i != null) {
+            albums.set(i, new Album(new Video(""), new Image(getIntent().getStringExtra("fileName"))));
         }
 
         // folderがあるかないかを見る
         String.valueOf(R.string.directory_name);
 
-        linearLayout = (LinearLayout) findViewById(R.id.content_create_album_layout_01);
-        View resource = createResource(albums.get(0));
-        if (resource != null) {
-            linearLayout.addView(resource);
-        } else {
-            linearLayout.setBackgroundResource(R.drawable.select_album_design_01_bgi);
+        List<LinearLayout> layouts = new ArrayList<>();
+        layouts.add((LinearLayout) findViewById(R.id.content_create_album_layout_01));
+        layouts.add((LinearLayout) findViewById(R.id.content_create_album_layout_02));
+        layouts.add((LinearLayout) findViewById(R.id.content_create_album_layout_03));
+        layouts.add((LinearLayout) findViewById(R.id.content_create_album_layout_05));
+        layouts.add((LinearLayout) findViewById(R.id.content_create_album_layout_06));
+        for (int layoutCount = 0; layoutCount < layouts.size(); layoutCount++) {
+            View resource = createResource(albums.get(layoutCount));
+            if (resource != null) {
+                layouts.get(layoutCount).addView(resource);
+            } else {
+                ImageView imageView = new ImageView(this);
+                imageView.setImageResource(R.drawable.camera);
+                imageView.setOnClickListener(new CameraView(this, layoutCount));
+                layouts.get(layoutCount).addView(imageView);
+            }
         }
-        linearLayout = (LinearLayout) findViewById(R.id.content_create_album_layout_02);
-        resource = createResource(albums.get(1));
-        if (resource != null) {
-            linearLayout.addView(resource);
-        } else {
-            linearLayout.setBackgroundResource(R.drawable.select_album_design_01_bgi);
+    }
+
+    public static class CameraView implements View.OnClickListener {
+        Context context;
+        int viewNumber;
+        CameraView(Context context, int viewNumber) {
+            this.context = context;
+            this.viewNumber = viewNumber;
         }
-        linearLayout = (LinearLayout) findViewById(R.id.content_create_album_layout_03);
-        resource = createResource(albums.get(2));
-        if (resource != null) {
-            linearLayout.addView(resource);
-        } else {
-            ImageView imageView = new ImageView(this);
-            imageView.setImageResource(R.drawable.select_album_design_01_bgi);
-            linearLayout.addView(imageView);
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(context, HelloJni.class);
+            intent.putExtra("shotNumber", viewNumber);
+            context.startActivity(intent);
         }
     }
 
@@ -90,6 +106,17 @@ public class CreateAlbumActivity extends Activity {
             return videoView;
         }
         return null;
+    }
+
+    private Integer getTokenImageNum() {
+        String fileName = getIntent().getStringExtra("fileName");
+        if (fileName == null) {
+            return null;
+        }
+        String[] split = fileName.split("_");
+        String s = split[split.length - 1];
+        String substring = s.substring(0, 1);
+        return Integer.parseInt(substring);
     }
 
     @Override
