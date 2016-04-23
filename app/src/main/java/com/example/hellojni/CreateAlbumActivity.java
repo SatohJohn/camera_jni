@@ -15,8 +15,6 @@ import com.example.hellojni.adapter.MuteVideoAdapter;
 import com.example.hellojni.model.Album;
 import com.example.hellojni.model.Image;
 import com.example.hellojni.model.Video;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
