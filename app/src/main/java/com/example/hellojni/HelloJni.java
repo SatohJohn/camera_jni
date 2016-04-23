@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.os.Bundle;
@@ -136,11 +137,15 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
         yuvtoargb(bytes, mGrayImg, PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
+        Log.d("aaaaaaaa", "" + mGrayImg[100] + ":" + mGrayImg[200] + ":" + mGrayImg[300]);
+
+        /*
         // グレースケル画像に変換
         for (int i = 0; i < mGrayImg.length; i++) {
             p = bytes[i] & 0xff;
             mGrayImg[i] = 0xff000000 | p << 16 | p << 8 | p;
         }
+        */
         mBitmap.setPixels(mGrayImg, 0, PREVIEW_WIDTH, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
         // 描画処理
         Canvas canvas = mHolder.lockCanvas();

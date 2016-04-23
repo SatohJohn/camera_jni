@@ -77,7 +77,34 @@ void Java_com_example_hellojni_HelloJni_print(JNIEnv* env, jobject thiz, jbyteAr
 }
 
 // yuv→argb 変換
-void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobject thiz, jbyteArray yuvArray, jintArray rgbArray, int width, int height)
-{
+void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobject thiz, jbyteArray yuvArray, jintArray rgbArray, int width, int height) {
+   jbyte *yuvImg = (*env)->GetByteArrayElements(env, yuvArray, 0);
+   jint *rgbImg = (*env)->GetIntArrayElements(env, rgbArray, 0);
 
+   int total = width * height;
+   int x = 0;
+   int y = 0;
+
+   for (x=0; x < width; x++) {
+      for (y=0; y < height; y++) {
+         int y_, u, v;
+         int rgb[3];
+
+         y_ = yuvImg[y * width + x];
+         u = yuvImg[(y / 2) * (width / 2) + (x / 2) + total];
+         v = yuvImg[(y / 2) * (width / 2) + (x / 2) + total + (total / 4)];
+
+         rgb[0] = y_ + (int)(1.772*v);
+         rgb[1] = y_ - (int)(0.344*v + 0.714*u);
+         rgb[2] = y_ + (int)(1.402*u);
+         rgb[0] = rgb[0]>255? 255 : rgb[0]<0 ? 0 : rgb[0];
+         rgb[1] = rgb[1]>255? 255 : rgb[1]<0 ? 0 : rgb[1];
+         rgb[2] = rgb[2]>255? 255 : rgb[2]<0 ? 0 : rgb[2];
+
+         rgbImg[y * width + x] = 0xFF000000 | (rgb[0] << 16) | (rgb[1] << 8) | (rgb[2]);
+      }
+   }
+
+   (*env)->ReleaseByteArrayElements(env, yuvArray, yuvImg, 0);
+   (*env)->ReleaseIntArrayElements(env, rgbArray, rgbImg, 0);
 }
