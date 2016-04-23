@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -20,11 +21,11 @@ import java.util.List;
 /**
  * データリストからリストビューを生み出すためのカスタムアダプター
  */
-public class SelectAlbumDesignListAdapter extends ArrayAdapter<Album> {
+public class SelectAlbumDesignListAdapter extends ArrayAdapter<String> {
 
     LayoutInflater layoutInflater;
 
-    public SelectAlbumDesignListAdapter(Context context, int resource, List<Album> objects) {
+    public SelectAlbumDesignListAdapter(Context context, int resource, List<String> objects) {
         super(context, 0, objects);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -35,23 +36,13 @@ public class SelectAlbumDesignListAdapter extends ArrayAdapter<Album> {
             convertView = layoutInflater.inflate(R.layout.template_select_album_design_list, null);
         }
 
-        Album data = getItem(position);
-        VideoView videoView = (VideoView) convertView.findViewById(R.id.video);
-        videoView.setVideoPath(Environment.getExternalStorageDirectory().getPath() + data.video.path);
-        MediaController mc = new MediaController(getContext());
-        mc.setAnchorView(videoView);
-        mc.setMediaPlayer(videoView);
-        videoView.setOnPreparedListener(new MuteVideoAdapter());
-
-        videoView.start();
-        Button button = (Button) convertView.findViewById(R.id.template_video_camera);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), HelloJni.class);
-                getContext().startActivity(intent);
-            }
-        });
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
+        imageView.setImageResource(R.drawable.design_01);
+        if (position % 2 == 0) {
+            imageView.setBackgroundResource(R.drawable.left);
+        } else {
+            imageView.setBackgroundResource(R.drawable.right);
+        }
 
         return convertView;
     }

@@ -22,27 +22,27 @@ public class SelectAlbumDesignActivity extends Activity {
 
     private String moviewPath = "/Movies/preload_xperia_hd2.mp4";
     private String moviewPath2 = "/Movies/preload_ps4_montage.mp4";
-    List<Album> albums = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_album_design_activity);
-//
-//        videoView = (VideoView) findViewById(R.id.video_view_activity_video);
-//        videoView.setVideoPath(Environment.getExternalStorageDirectory().getPath() + moviewPath);
-//        videoView.start();
 
-        // TODO:Videoを組み立てる手段
-        albums.add(new Album(new Video(moviewPath), new Image(null)));
-        albums.add(new Album(new Video(moviewPath), new Image(null)));
         GridView gridView = (GridView) findViewById(R.id.select_album_design_activity_list);
-        gridView.setAdapter(new SelectAlbumDesignListAdapter(this, 0, albums));
+        List<String> list = new ArrayList<>();
+        list.add("design01");
+        list.add("design02");
+        list.add("design03");
+        list.add("design04");
+        list.add("design05");
+        list.add("design06");
+        gridView.setAdapter(new SelectAlbumDesignListAdapter(this, 0, list));
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(SelectAlbumDesignActivity.this, HelloJni.class);
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent intent = new Intent(SelectAlbumDesignActivity.this, CreateAlbumActivity.class);
+                intent.putExtra("designNumber", position);
                 startActivity(intent);
             }
         });
