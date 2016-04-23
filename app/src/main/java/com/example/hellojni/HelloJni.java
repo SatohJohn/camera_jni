@@ -23,7 +23,9 @@ import android.graphics.Canvas;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -31,7 +33,11 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -57,6 +63,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     private Bitmap mBitmap = null;
 
     private long mTimestart = System.currentTimeMillis();
+    private boolean mTouch = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -66,6 +73,48 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         SurfaceView preview = (SurfaceView) findViewById(R.id.preview_id);
         mHolder = preview.getHolder();
         mHolder.addCallback(this);
+        mTouch = false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Log.d("TouchEvent", "X:" + event.getX() + ",Y:" + event.getY());
+        if (mTouch == true)
+        {
+            return false;
+        }
+        mTouch = true;
+        final String SAVE_DIR = "/pashao/";
+        File file = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+        try{
+            if(!file.exists()){
+                file.mkdir();
+            }
+        }catch(SecurityException e){
+            e.printStackTrace();
+            throw e;
+        }
+
+        Date mDate = new Date();
+        SimpleDateFormat fileNameDate = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String fileName = fileNameDate.format(mDate) + ".png";
+        String AttachName = file.getAbsolutePath() + "/" + fileName;
+        Log.d("aaaaaaaaa", AttachName);
+
+        try {
+            FileOutputStream out = new FileOutputStream(AttachName);
+            mBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            Log.d("aaaaaaaaa", "save to file");
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        Intent intent = new Intent(this, CreateAlbumActivity.class);
+        intent.putExtra("fileName", AttachName);
+        startActivity(intent);
+        return true;
     }
 
     @Override
@@ -77,6 +126,11 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        if (mTouch == true)
+        {
+            return;
+        }
+
         int cameraId = 0;
         mCamera = Camera.open(cameraId);
         // ディスプレイの向き設定
@@ -94,7 +148,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
         mGrayImg   = new int[PREVIEW_WIDTH * PREVIEW_HEIGHT];
         mScaleImg  = new int[DISP_WIDTH * DISP_HEIGHT];
-        mBitmap = Bitmap.createBitmap(DISP_WIDTH, DISP_HEIGHT, Bitmap.Config.ARGB_8888);
+        mBitmap    = Bitmap.createBitmap(DISP_WIDTH, DISP_HEIGHT, Bitmap.Config.ARGB_8888);
         initiaizeGraphics(PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
         try {
@@ -163,7 +217,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             mHolder.unlockCanvasAndPost(canvas);
         }
         long end = System.currentTimeMillis();
-        Log.d(getClass().getName(), "Time: " + (end - mTimestart));
+        //Log.d(getClass().getName(), "Time: " + (end - mTimestart));
         mTimestart = end;
     }
 
