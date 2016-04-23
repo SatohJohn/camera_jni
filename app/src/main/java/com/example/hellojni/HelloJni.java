@@ -16,6 +16,7 @@
 package com.example.hellojni;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.SurfaceTexture;
@@ -56,12 +57,13 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 //        TextView  tv = new TextView(this);
 //        tv.setText( stringFromJNI() );
 //        setContentView(tv);
-
-        setContentView(R.layout.activity_hello_jni_activity);
-
-        SurfaceView preview = (SurfaceView) findViewById(R.id.preview_id);
-        mHolder = preview.getHolder();
-        mHolder.addCallback(this);
+        startActivity(new Intent(this, VideoViewActivity.class));
+//
+//        setContentView(R.layout.activity_hello_jni_activity);
+//
+//        SurfaceView preview = (SurfaceView) findViewById(R.id.preview_id);
+//        mHolder = preview.getHolder();
+//        mHolder.addCallback(this);
     }
 
     /* A native method that is implemented by the
