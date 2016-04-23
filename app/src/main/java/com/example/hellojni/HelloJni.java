@@ -36,7 +36,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     static{
         System.loadLibrary("hello-jni");
     }
-    private native void yuvtoargb(byte[] b, int[] i, int width, int height);
+    private native void yuvtoargb(int[] out,byte[] in,  int width, int height);
     private native void initiaizeGraphics(int width, int height);
     private native void releaseGraphics();
 
@@ -111,7 +111,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         for (int i=0; i<1000; ++i )
             mGrayImg[i] = 0xFF00FF00;
 
-        yuvtoargb(bytes, mGrayImg, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+        yuvtoargb(mGrayImg, bytes, PREVIEW_WIDTH, PREVIEW_HEIGHT);
         mBitmap.setPixels(mGrayImg, 0, PREVIEW_WIDTH, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
         Canvas canvas = mHolder.lockCanvas();

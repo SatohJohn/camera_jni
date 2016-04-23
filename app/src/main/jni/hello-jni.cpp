@@ -5,7 +5,7 @@ static const int MAX_FRAME_BUFFER = 8;
 static unsigned char* g_FrameBuffer[MAX_FRAME_BUFFER];
 
 // yuv→argb 変換
-extern "C" void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobject obj, jbyteArray yuvArray, jintArray rgbArray, int width, int height)
+extern "C" void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobject obj, jintArray rgbArray, jbyteArray yuvArray, int width, int height)
 {
     jbyte *yuvImg = (env)->GetByteArrayElements(yuvArray, 0);
     jint *rgbImg = (env)->GetIntArrayElements(rgbArray, 0);
