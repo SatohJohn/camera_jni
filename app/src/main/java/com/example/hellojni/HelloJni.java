@@ -15,6 +15,7 @@
  */
 package com.example.hellojni;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera.PreviewCallback
@@ -65,10 +67,23 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         releaseGraphics();
     }
 
+    @TargetApi(Build.VERSION_CODES.ECLAIR)
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         mCamera = Camera.open();
+        List<Camera.Size> sizeList = mCamera.getParameters().getSupportedPreviewSizes();
+        Camera.Size bestSize = sizeList.get(0);
+        for(int cameraSizeIndex = 1; cameraSizeIndex < sizeList.size(); cameraSizeIndex++){
+            if((sizeList.get(cameraSizeIndex).width * sizeList.get(cameraSizeIndex).height) >
+                    (bestSize.width * bestSize.height)){
+                bestSize = sizeList.get(cameraSizeIndex);
+            }
+        }
         // グレースケル画像バッファ (NV21 -> ARGB_8888)
+//        PREVIEW_WIDTH = surfaceHolder.getSurfaceFrame().width();
+//        PREVIEW_HEIGHT = surfaceHolder.getSurfaceFrame().height();
+        PREVIEW_WIDTH = bestSize.width;
+        PREVIEW_HEIGHT = bestSize.height;
         mGrayImg = new int[PREVIEW_WIDTH * PREVIEW_HEIGHT];
         mBitmap = Bitmap.createBitmap(PREVIEW_WIDTH, PREVIEW_HEIGHT, Bitmap.Config.ARGB_8888);
 
@@ -84,11 +99,21 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.ECLAIR)
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int indent, int i1, int i2) {
         mCamera.stopPreview();
         // プレビュー画面のサイズ設定
         Camera.Parameters params = mCamera.getParameters();
+//        List<Camera.Size> sizeList = mCamera.getParameters().getSupportedPreviewSizes();
+//        Camera.Size bestSize = sizeList.get(0);
+//        for(int cameraSizeIndex = 1; cameraSizeIndex < sizeList.size(); cameraSizeIndex++){
+//            if((sizeList.get(cameraSizeIndex).width * sizeList.get(cameraSizeIndex).height) >
+//                    (bestSize.width * bestSize.height)){
+//                bestSize = sizeList.get(cameraSizeIndex);
+//            }
+//        }
+
         params.setPreviewSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
         mCamera.setParameters(params);
         // プレビュー開始
