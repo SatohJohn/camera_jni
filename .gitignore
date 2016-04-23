@@ -169,3 +169,5 @@ gradle-app.setting
 
 
 
+/gradlew
+/gradle/wrapper/gradle-wrapper.jar
