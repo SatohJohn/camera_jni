@@ -22,6 +22,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
@@ -211,21 +212,11 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         yuvtoargb(mGrayImg, bytes, PREVIEW_WIDTH, PREVIEW_HEIGHT);
         updateFrame( mGrayImg, bytes );
 
-        for (int y = 0; y < DISP_HEIGHT; y++)
-        {
-            int p_y = y * PREVIEW_HEIGHT / DISP_HEIGHT;
-            for (int x = 0; x < DISP_WIDTH; x++){
-                int p_x = x * PREVIEW_WIDTH / DISP_WIDTH;
-                mScaleImg[y * DISP_WIDTH + x] = mGrayImg[p_y * PREVIEW_WIDTH + p_x];
-            }
-        }
-
-        //mBitmap.setPixels(mGrayImg, 0, DISP_WIDTH, 0, 0, DISP_WIDTH, DISP_HEIGHT);
-        mBitmap.setPixels(mScaleImg, 0, DISP_WIDTH, 0, 0, DISP_WIDTH, DISP_HEIGHT);
+        mBitmap.setPixels(mGrayImg, 0, PREVIEW_WIDTH, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
         Canvas canvas = mHolder.lockCanvas();
         if (canvas != null) {
-            canvas.drawBitmap(mBitmap, 0, 0, null);
+            canvas.drawBitmap(mBitmap, new Rect(0,0,PREVIEW_WIDTH,PREVIEW_HEIGHT), new Rect(0,0,DISP_WIDTH,DISP_HEIGHT), null);
             mHolder.unlockCanvasAndPost(canvas);
         }
         long end = System.currentTimeMillis();

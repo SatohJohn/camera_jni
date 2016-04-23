@@ -1,11 +1,15 @@
 #include <jni.h>
 #include <stdlib.h>
 
-static const int MAX_FRAME_BUFFER = 4;
-static const int MAX_FRAME_MATCH = 16;
+static const int MAX_FRAME_BUFFER = 6;
+static const int MAX_FRAME_MATCH = 64;
 static unsigned int* g_FrameBuffer[MAX_FRAME_BUFFER];
+static unsigned int* g_FixedFrame;
 static unsigned char* g_YFrameBuffer[MAX_FRAME_BUFFER];
+static unsigned char* g_FixedYFrame;
+static unsigned short* g_FixedFrameCount;
 static unsigned short* g_SubFrameBuffer = NULL;
+static int g_FrameCount = 0;
 static int g_FrameIndex = 0;
 static int g_ImageLength = 0;
 static int g_ImageWidth = 0;
@@ -80,6 +84,13 @@ extern "C" void Java_com_example_hellojni_HelloJni_initiaizeGraphics(JNIEnv* env
         g_FrameBuffer[i] = new unsigned int[width*height];
         g_YFrameBuffer[i] = new unsigned char[width*height];
     }
+    g_FixedFrame = new unsigned int[width*height];
+    g_FixedYFrame = new unsigned char[width*height];
+    g_FixedFrameCount = new unsigned short[width*height];
+
+    memset(g_FixedFrame,0,g_ImageLength*sizeof(unsigned int) );
+    memset(g_FixedYFrame,0,g_ImageLength*sizeof(unsigned char) );
+    memset(g_FixedFrameCount,0,g_ImageLength*sizeof(unsigned short) );
 }
 
 extern "C" void Java_com_example_hellojni_HelloJni_releaseGraphics(JNIEnv* env, jobject obj)
@@ -92,6 +103,9 @@ extern "C" void Java_com_example_hellojni_HelloJni_releaseGraphics(JNIEnv* env, 
         delete[] g_YFrameBuffer[i];
         g_YFrameBuffer[i] = NULL;
     }
+    delete[] g_FixedFrame;
+    delete[] g_FixedYFrame;
+    delete[] g_FixedFrameCount;
 }
 
 extern "C" void Java_com_example_hellojni_HelloJni_updateFrame(JNIEnv* env, jobject obj, jintArray rgbArray, jbyteArray yuvArray) {
@@ -102,23 +116,42 @@ extern "C" void Java_com_example_hellojni_HelloJni_updateFrame(JNIEnv* env, jobj
     memcpy(g_FrameBuffer[g_FrameIndex],rgbImg,g_ImageLength*sizeof(unsigned int));
     memcpy(g_YFrameBuffer[g_FrameIndex],yuvImg,g_ImageLength*sizeof(unsigned char));
 
-    for( int i=0; i<g_ImageLength; ++i)
-    {
+    for( int i=0; i<g_ImageLength; ++i) {
         int match[MAX_FRAME_MATCH] = {};
         int max = 0;
-        int max_index = 0;
-        for( int j=0; j<MAX_FRAME_BUFFER; ++j )
-        {
-            int value =g_YFrameBuffer[j][i]>>4;
+        int max_index = g_FrameIndex;
+        for (int j = 0; j < MAX_FRAME_BUFFER; ++j) {
+            int value = g_YFrameBuffer[j][i] >> 3;
             match[value]++;
 
-            if( match[value] > max )
-            {
+            if (match[value] > max) {
                 max = match[value];
                 max_index = j;
             }
         }
         rgbImg[i] = g_FrameBuffer[max_index][i];
+
+//        if (g_FixedFrameCount[i] >= 20)
+//        {
+//            rgbImg[i] = g_FixedFrame[i];
+//            ++g_FixedFrameCount[i];
+//            if( g_FixedFrameCount[i] >= 30)
+//                g_FixedFrameCount[i] = 0;
+//
+//        }
+//        else if( abs( g_FixedYFrame[i] - g_YFrameBuffer[max_index][i]) > 64 )
+//        {
+//            g_FixedYFrame[i] = g_FrameBuffer[max_index][i];
+//            rgbImg[i] = g_FrameBuffer[max_index][i];
+//            g_FixedYFrame[i] = g_YFrameBuffer[max_index][i];
+//            g_FixedFrameCount[i] = 0;
+//        }
+//        else
+//        {
+//            rgbImg[i] = g_FrameBuffer[max_index][i];
+//            g_FixedFrame[i] = rgbImg[i];
+//            g_FixedFrameCount[i]++;
+//        }
     }
 
     if (++g_FrameIndex >= MAX_FRAME_BUFFER) {
