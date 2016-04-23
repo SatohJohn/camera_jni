@@ -4,32 +4,34 @@ package com.example.hellojni.model;
  * Created by satohjohn on 16/04/23.
  */
 public class Album {
-    public Video video;
-    public Image image;
+    public String path;
 
-    public Album(Video video, Image image) {
-        if (video == null) {
-            throw new IllegalArgumentException("video is not found");
+    public Album(String path) {
+        if (path == null) {
+            throw new IllegalArgumentException("path is null");
         }
-        if (image == null) {
-            throw new IllegalArgumentException("image is not found");
-        }
-        this.video = video;
-        this.image = image;
-        if (video.hasPath() && image.hasPath()) {
-            throw new IllegalArgumentException("album canot have video and image");
-        }
+        this.path = path;
     }
 
     public boolean isNotHaveBoth() {
-        return !video.hasPath() && !image.hasPath();
+        return !hasVideo() && !hasImage();
     }
 
     public boolean hasVideo() {
-        return video.hasPath();
+        String suffix = getSuffix(path);
+        return suffix.equals("mp4") || suffix.equals("mpeg");
     }
 
     public boolean hasImage() {
-        return image.hasPath();
+        String suffix = getSuffix(path);
+        return suffix.equals("png") || suffix.equals("jpg");
+    }
+
+    private String getSuffix(String fileName) {
+        int point = fileName.lastIndexOf(".");
+        if (point != -1) {
+            return fileName.substring(point + 1);
+        }
+        return "";
     }
 }

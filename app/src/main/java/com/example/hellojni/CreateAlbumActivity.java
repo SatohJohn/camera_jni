@@ -14,8 +14,7 @@ import android.widget.VideoView;
 
 import com.example.hellojni.adapter.MuteVideoAdapter;
 import com.example.hellojni.model.Album;
-import com.example.hellojni.model.Image;
-import com.example.hellojni.model.Video;
+import com.example.hellojni.service.AlbumService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,32 +25,22 @@ import java.util.List;
  */
 public class CreateAlbumActivity extends Activity {
 
-    private String moviewPath = Environment.getExternalStorageDirectory().getPath() + "/Movies/preload_xperia_hd2.mp4";
-    private String imagePath = Environment.getExternalStorageDirectory().getPath() + "/image/alpha_amalfi_coast.jpg";
+    AlbumService service = new AlbumService();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_album_activity);
 
-        Integer i = getTokenImageNum();
-
-        List<Album> albums = new ArrayList<>();
-        {
-            albums.add(new Album(new Video(moviewPath), new Image("")));
-            albums.add(new Album(new Video(""), new Image(imagePath)));
-            albums.add(new Album(new Video(""), new Image("")));
-            albums.add(new Album(new Video(""), new Image("")));
-            albums.add(new Album(new Video(""), new Image("")));
-        }
-        if (i != null) {
-            albums.set(i, new Album(new Video(""), new Image(getIntent().getStringExtra("fileName"))));
+        String fileName = getIntent().getStringExtra("fileName");
+        Integer tokenImageNum = null;
+        if (fileName != null) {
+            tokenImageNum = service.getAlbumNum(fileName);
         }
 
-        // folderがあるかないかを見る
-        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + getString(R.string.directory_name));
-        if (!file.exists()) {
-            file.mkdir();
+        List<Album> albums = service.loadAlbum(Environment.getExternalStorageDirectory().getPath() + "/" + getString(R.string.directory_name));
+        if (tokenImageNum != null) {
+            albums.set(tokenImageNum, new Album(fileName));
         }
 
         List<LinearLayout> layouts = new ArrayList<>();
@@ -92,7 +81,7 @@ public class CreateAlbumActivity extends Activity {
     private View createResource(Album album) {
         if (album.hasImage()) {
             ImageView imageView = new ImageView(this);
-            File file = new File(album.image.path);
+            File file = new File(album.path);
             if (file.exists()) {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));
             }
@@ -103,22 +92,11 @@ public class CreateAlbumActivity extends Activity {
             mc.setAnchorView(videoView);
             mc.setMediaPlayer(videoView);
             videoView.setOnPreparedListener(new MuteVideoAdapter());
-            videoView.setVideoPath(album.video.path);
+            videoView.setVideoPath(album.path);
             videoView.start();
             return videoView;
         }
         return null;
-    }
-
-    private Integer getTokenImageNum() {
-        String fileName = getIntent().getStringExtra("fileName");
-        if (fileName == null) {
-            return null;
-        }
-        String[] split = fileName.split("_");
-        String s = split[split.length - 1];
-        String substring = s.substring(0, 1);
-        return Integer.parseInt(substring);
     }
 
     @Override
