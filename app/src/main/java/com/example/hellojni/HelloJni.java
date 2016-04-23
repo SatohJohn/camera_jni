@@ -65,6 +65,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
      */
     public native void  stringFromJNIA(byte[] b);
     public native void  print(byte[] b);
+    public native void yuvtoargb(byte[] b, int[] i, int width, int height);
 
     /* this is used to load the 'hello-jni' library on application
      * startup. The library has already been unpacked into
@@ -82,6 +83,8 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         // グレースケル画像バッファ (NV21 -> ARGB_8888)
         mGrayImg = new int[PREVIEW_WIDTH * PREVIEW_HEIGHT];
         mBitmap = Bitmap.createBitmap(PREVIEW_WIDTH, PREVIEW_HEIGHT, Bitmap.Config.ARGB_8888);
+
+
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) { // API Level 11以上
@@ -125,6 +128,8 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
         print(bytes);
         stringFromJNIA(bytes);
+
+        yuvtoargb(bytes, mGrayImg, PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
         // グレースケル画像に変換
         for (int i = 0; i < mGrayImg.length; i++) {

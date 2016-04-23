@@ -75,3 +75,9 @@ void Java_com_example_hellojni_HelloJni_print(JNIEnv* env, jobject thiz, jbyteAr
 {
 
 }
+
+// yuv→argb 変換
+void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobject thiz, jbyteArray yuvArray, jintArray rgbArray, int width, int height)
+{
+
+}
