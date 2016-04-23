@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HelloJni</string>
-    <string name="next_button_to_camera">カメラに移動</string>
+    <string name="next_button_to_show_album">作る</string>
+    <string name="next_button_to_create_album">見る</string>
 </resources>

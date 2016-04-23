@@ -4,12 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".VideoViewActivity">
+    tools:context=".CreateAlbumActivity">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_activity_camera_button"
-        android:text="@string/next_button_to_camera"
+        android:id="@+id/main_activity_show_album"
+        android:text="@string/next_button_to_show_album"
         android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_activity_create_album"
+        android:text="@string/next_button_to_create_album"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>

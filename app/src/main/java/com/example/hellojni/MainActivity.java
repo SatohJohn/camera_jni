@@ -11,18 +11,27 @@ import android.widget.Button;
  */
 public class MainActivity extends Activity {
 
-    Button camera;
+    Button showAlbumButton;
+    Button createAlbumButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        camera = (Button) findViewById(R.id.main_activity_camera_button);
+        showAlbumButton = (Button) findViewById(R.id.main_activity_show_album);
+        createAlbumButton = (Button) findViewById(R.id.main_activity_create_album);
 
-        camera.setOnClickListener(new View.OnClickListener() {
+        createAlbumButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, HelloJni.class);
+                Intent intent = new Intent(MainActivity.this, CreateAlbumActivity.class);
+                startActivity(intent);
+            }
+        });
+        showAlbumButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ShowAlbumActivity.class);
                 startActivity(intent);
             }
         });

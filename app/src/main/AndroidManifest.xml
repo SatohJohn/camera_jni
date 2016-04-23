@@ -22,7 +22,9 @@
       </intent-filter>
     </activity>
 
-    <activity android:name=".VideoViewActivity"
+    <activity android:name=".CreateAlbumActivity"
+        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
+    <activity android:name=".ShowAlbumActivity"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
     <activity android:name=".HelloJni"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
