@@ -36,7 +36,6 @@ public class CreateAlbumActivity extends Activity {
 
         Integer i = getTokenImageNum();
 
-        // TODO:Videoを組み立てる手段
         List<Album> albums = new ArrayList<>();
         {
             albums.add(new Album(new Video(moviewPath), new Image("")));
@@ -50,7 +49,10 @@ public class CreateAlbumActivity extends Activity {
         }
 
         // folderがあるかないかを見る
-        String.valueOf(R.string.directory_name);
+        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + getString(R.string.directory_name));
+        if (!file.exists()) {
+            file.mkdir();
+        }
 
         List<LinearLayout> layouts = new ArrayList<>();
         layouts.add((LinearLayout) findViewById(R.id.content_create_album_layout_01));

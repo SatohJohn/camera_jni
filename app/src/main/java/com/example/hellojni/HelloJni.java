@@ -17,6 +17,8 @@ package com.example.hellojni;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -24,6 +26,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -86,8 +89,8 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             return false;
         }
         mTouch = true;
-        final String SAVE_DIR = String.valueOf(R.string.directory_name);
-        File file = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+        final String SAVE_DIR = getString(R.string.directory_name);
+        File file = new File(Environment.getExternalStorageDirectory().getPath()  + "/" + SAVE_DIR);
         try{
             if(!file.exists()){
                 file.mkdir();
@@ -112,6 +115,13 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         } catch(IOException e) {
             e.printStackTrace();
         }
+
+        ContentValues values = new ContentValues();
+        ContentResolver contentResolver = getContentResolver();
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.TITLE, fileName);
+        values.put("_data", AttachName);
+        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         Intent intent = new Intent(this, CreateAlbumActivity.class);
         intent.putExtra("fileName", AttachName);
