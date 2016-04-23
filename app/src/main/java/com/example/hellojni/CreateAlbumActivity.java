@@ -26,8 +26,8 @@ import java.util.List;
  */
 public class CreateAlbumActivity extends Activity {
 
-    private String moviewPath = "/Movies/preload_xperia_hd2.mp4";
-    private String imagePath = "/image/alpha_amalfi_coast.jpg";
+    private String moviewPath = Environment.getExternalStorageDirectory().getPath() + "/Movies/preload_xperia_hd2.mp4";
+    private String imagePath = Environment.getExternalStorageDirectory().getPath() + "/image/alpha_amalfi_coast.jpg";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class CreateAlbumActivity extends Activity {
     private View createResource(Album album) {
         if (album.hasImage()) {
             ImageView imageView = new ImageView(this);
-            File file = new File(Environment.getExternalStorageDirectory().getPath() + album.image.path);
+            File file = new File(album.image.path);
             if (file.exists()) {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));
             }
@@ -103,7 +103,7 @@ public class CreateAlbumActivity extends Activity {
             mc.setAnchorView(videoView);
             mc.setMediaPlayer(videoView);
             videoView.setOnPreparedListener(new MuteVideoAdapter());
-            videoView.setVideoPath(Environment.getExternalStorageDirectory().getPath() + album.video.path);
+            videoView.setVideoPath(album.video.path);
             videoView.start();
             return videoView;
         }
