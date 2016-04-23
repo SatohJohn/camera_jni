@@ -23,6 +23,8 @@ import android.graphics.Canvas;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
+import android.util.Log;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.os.Bundle;
@@ -42,12 +44,14 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     private native void initiaizeGraphics(int width, int height);
     private native void releaseGraphics();
 
+
     private static int PREVIEW_WIDTH = 640;
     private static int PREVIEW_HEIGHT = 480;
     private Camera mCamera = null;
     private SurfaceHolder mHolder = null;
     private SurfaceTexture mSurface = null;
     private int[] mGrayImg = null;
+    private int[] mRotateImg = null;
     private Bitmap mBitmap = null;
 
     @Override
@@ -70,7 +74,11 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        mCamera = Camera.open();
+        int cameraId = 0;
+        mCamera = Camera.open(cameraId);
+        // ディスプレイの向き設定
+        //setCameraDisplayOrientation(cameraId);
+
         List<Camera.Size> sizeList = mCamera.getParameters().getSupportedPreviewSizes();
         Camera.Size bestSize = sizeList.get(0);
         for(int cameraSizeIndex = 1; cameraSizeIndex < sizeList.size(); cameraSizeIndex++){
@@ -79,12 +87,14 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
                 bestSize = sizeList.get(cameraSizeIndex);
             }
         }
-        // グレースケル画像バッファ (NV21 -> ARGB_8888)
-//        PREVIEW_WIDTH = surfaceHolder.getSurfaceFrame().width();
-//        PREVIEW_HEIGHT = surfaceHolder.getSurfaceFrame().height();
-        PREVIEW_WIDTH = bestSize.width;
+        PREVIEW_WIDTH  = bestSize.width;
         PREVIEW_HEIGHT = bestSize.height;
-        mGrayImg = new int[PREVIEW_WIDTH * PREVIEW_HEIGHT];
+
+        Log.d("aaaaaaaaa", "" + surfaceHolder.getSurfaceFrame().width() + "," + surfaceHolder.getSurfaceFrame().height() + "," + bestSize.width + "," + bestSize.height);
+
+        mGrayImg   = new int[PREVIEW_WIDTH * PREVIEW_HEIGHT];
+        mRotateImg = new int [PREVIEW_WIDTH * PREVIEW_HEIGHT];
+        //mBitmap = Bitmap.createBitmap(PREVIEW_HEIGHT, PREVIEW_WIDTH, Bitmap.Config.ARGB_8888);
         mBitmap = Bitmap.createBitmap(PREVIEW_WIDTH, PREVIEW_HEIGHT, Bitmap.Config.ARGB_8888);
 
         try {
@@ -115,6 +125,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 //        }
 
         params.setPreviewSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
+
         mCamera.setParameters(params);
         // プレビュー開始
         mCamera.setPreviewCallback(this);
@@ -137,6 +148,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             mGrayImg[i] = 0xFF00FF00;
 
         yuvtoargb(mGrayImg, bytes, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+
         mBitmap.setPixels(mGrayImg, 0, PREVIEW_WIDTH, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
         Canvas canvas = mHolder.lockCanvas();
@@ -144,5 +156,37 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             canvas.drawBitmap(mBitmap, 0, 0, null);
             mHolder.unlockCanvasAndPost(canvas);
         }
+    }
+
+
+    // ディスプレイの向き設定
+    public void setCameraDisplayOrientation(int cameraId) {
+    // カメラの情報取得
+    Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+    Camera.getCameraInfo(cameraId, cameraInfo);
+    // ディスプレイの向き取得
+    int rotation = getWindowManager().getDefaultDisplay().getRotation();
+    int degrees = 0;
+    switch (rotation) {
+        case Surface.ROTATION_0:
+            degrees = 0; break;
+        case Surface.ROTATION_90:
+            degrees = 90; break;
+        case Surface.ROTATION_180:
+            degrees = 180; break;
+        case Surface.ROTATION_270:
+            degrees = 270; break;
+        }
+    // プレビューの向き計算
+    int result;
+    if (cameraInfo.facing == cameraInfo.CAMERA_FACING_FRONT) {
+        result = (cameraInfo.orientation + degrees) % 360;
+        result = (360 - result) % 360; // compensate the mirror
+        }
+    else {// back-facing
+        result = (cameraInfo.orientation - degrees + 360) % 360;
+        }
+    // ディスプレイの向き設定
+    mCamera.setDisplayOrientation(result);
     }
 }
