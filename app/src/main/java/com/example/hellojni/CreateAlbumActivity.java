@@ -25,8 +25,6 @@ public class CreateAlbumActivity extends Activity {
     private String moviewPath2 = "/Movies/preload_ps4_montage.mp4";
     List<Album> albums = new ArrayList<>();
 
-    Button camera;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +35,7 @@ public class CreateAlbumActivity extends Activity {
 //        videoView.start();
 
         // TODO:Videoを組み立てる手段
+        albums.add(new Album(new Video(moviewPath), new Image(moviewPath)));
         albums.add(new Album(new Video(moviewPath), new Image(moviewPath)));
         ListView listView = (ListView) findViewById(R.id.create_album_activity_list);
         listView.setAdapter(new ShowAlbumListAdapter(this, 0, albums));
