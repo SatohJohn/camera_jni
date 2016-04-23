@@ -24,6 +24,8 @@ import android.os.Build;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 
 import java.io.IOException;
 
@@ -43,6 +45,9 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        // ステータスバーを非表示にしておく
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         /* Create a TextView and set its content.
          * the text is retrieved by calling a native
