@@ -16,7 +16,7 @@ public class MuteVideoAdapter implements MediaPlayer.OnPreparedListener {
                 mediaPlayer = new MediaPlayer();
             }
             mediaPlayer.setVolume(0f, 0f);
-            mediaPlayer.setLooping(false);
+            mediaPlayer.setLooping(true);
             mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
