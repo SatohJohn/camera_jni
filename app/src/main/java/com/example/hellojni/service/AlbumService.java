@@ -21,12 +21,12 @@ public class AlbumService {
      */
     public void cleanAlbum(String dirPath) {
         File directory = new File(dirPath);
-        if (!directory.isDirectory()) {
-            throw new IllegalArgumentException("dirPath is not directory");
-        }
         if (!directory.exists()) {
             directory.mkdir();
         } else {
+            if (!directory.isDirectory()) {
+                throw new IllegalArgumentException("dirPath is not directory");
+            }
             // fileのリスト
             for (File file :directory.listFiles()) {
                 file.delete();
