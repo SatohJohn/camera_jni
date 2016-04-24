@@ -217,6 +217,10 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
+        if( mTouch == true )
+        {
+            return;
+        }
         yuvtoargb(mGrayImg, bytes, PREVIEW_WIDTH, PREVIEW_HEIGHT);
         updateFrame( mGrayImg, bytes );
 
