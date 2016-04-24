@@ -1,11 +1,13 @@
 package com.example.hellojni;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Display;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import com.example.hellojni.adapter.MuteVideoAdapter;
@@ -53,13 +56,15 @@ public class CreateAlbumActivity extends Activity {
         layouts.add((LinearLayout) findViewById(R.id.content_create_album_layout_05));
         layouts.add((LinearLayout) findViewById(R.id.content_create_album_layout_06));
         for (int layoutCount = 0; layoutCount < layouts.size(); layoutCount++) {
-            View resource = createResource(albums.get(layoutCount));
+            View resource = createResource(albums.get(layoutCount), layouts.get(layoutCount));
             if (resource != null) {
                 layouts.get(layoutCount).addView(resource);
             } else {
                 ImageView imageView = new ImageView(this);
-                imageView.setImageResource(R.drawable.camera);
+                imageView.setImageResource(R.drawable.camera_icon);
+                imageView.setScaleType(ImageView.ScaleType.CENTER);
                 imageView.setOnClickListener(new CameraView(this, layoutCount));
+                imageView.setBackgroundResource(R.drawable.create_album_bgi_01);
                 layouts.get(layoutCount).addView(imageView);
             }
         }
@@ -81,13 +86,23 @@ public class CreateAlbumActivity extends Activity {
         }
     }
 
-    private View createResource(Album album) {
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private View createResource(Album album, View parent) {
         if (album.hasImage()) {
             ImageView imageView = new ImageView(this);
             File file = new File(album.path);
             Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
             imageView.setImageBitmap(bitmap);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setAdjustViewBounds(true);
+//
+//            float factor = (float)parent.getWidth() / bitmap.getWidth();
+//            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(DisplayUtils.getWidth(this), (int)(bitmap.getHeight() * factor));
+//            imageView.setLayoutParams(params);
+//            Matrix matrix = imageView.getImageMatrix();
+//            matrix.reset();
+//            matrix.postScale(factor, factor);
+//            imageView.setImageMatrix(matrix);
             return imageView;
         } else if (album.hasVideo()) {
             VideoView videoView = new VideoView(this);
