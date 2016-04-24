@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.AttributeSet;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -58,6 +61,7 @@ public class CreateAlbumActivity extends Activity {
         for (int layoutCount = 0; layoutCount < layouts.size(); layoutCount++) {
             View resource = createResource(albums.get(layoutCount), layouts.get(layoutCount));
             if (resource != null) {
+//                layouts.get(layoutCount).removeAllViews();
                 layouts.get(layoutCount).addView(resource);
             } else {
                 ImageView imageView = new ImageView(this);
@@ -68,6 +72,29 @@ public class CreateAlbumActivity extends Activity {
                 layouts.get(layoutCount).addView(imageView);
             }
         }
+//        RelativeLayout relative = (RelativeLayout) findViewById(R.id.relative);
+//        View resource1 = createResource(albums.get(0));
+//        relative.addView(resource1);
+//        resource1.requestLayout();
+//        ViewGroup.LayoutParams lp = resource1.getLayoutParams();
+//        ViewGroup.MarginLayoutParams param = (ViewGroup.MarginLayoutParams) lp;
+//        param.setMargins(10, 10, 10, 10);
+//        resource1.setLayoutParams(param);
+//
+//        for (int layoutCount = 0; layoutCount < albums.size(); layoutCount++) {
+//            View resource = createResource(albums.get(layoutCount), albums.get(layoutCount));
+//            if (resource != null) {
+//                layouts.get(layoutCount).addView(resource);
+//            } else {
+//                ImageView imageView = new ImageView(this);
+//                imageView.setImageResource(R.drawable.camera_icon_02);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER);
+//                imageView.setOnClickListener(new CameraView(this, layoutCount));
+//                imageView.setBackgroundResource(R.drawable.create_album_bgi_01);
+//                layouts.get(layoutCount).addView(imageView);
+//            }
+//        }
+
     }
 
     public static class CameraView implements View.OnClickListener {
@@ -92,26 +119,24 @@ public class CreateAlbumActivity extends Activity {
         }
     }
 
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private View createResource(Album album, View parent) {
+    private View createResource(Album album, LinearLayout layout) {
         if (album.hasImage()) {
+
             ImageView imageView = new ImageView(this);
+//            layout.addView(imageView);
             File file = new File(album.path);
             Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+//            bitmap = bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
             imageView.setImageBitmap(bitmap);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            imageView.setAdjustViewBounds(true);
+
+//            imageView.setRotation(90.0f);
 //
-//            float factor = (float)parent.getWidth() / bitmap.getWidth();
-//            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(DisplayUtils.getWidth(this), (int)(bitmap.getHeight() * factor));
-//            imageView.setLayoutParams(params);
-//            Matrix matrix = imageView.getImageMatrix();
-//            matrix.reset();
-//            matrix.postScale(factor, factor);
-//            imageView.setImageMatrix(matrix);
             return imageView;
         } else if (album.hasVideo()) {
             VideoView videoView = new VideoView(this);
+//            layout.addView(videoView);
             MediaController mc = new MediaController(this);
             mc.setAnchorView(videoView);
             mc.setMediaPlayer(videoView);

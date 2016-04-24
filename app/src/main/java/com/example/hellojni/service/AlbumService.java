@@ -12,7 +12,7 @@ import java.util.List;
  * Created by satohjohn on 16/04/24.
  */
 public class AlbumService {
-    private String moviewPath1 = Environment.getExternalStorageDirectory().getPath() + "/Download/test3.mp4";
+    private String moviewPath1 = Environment.getExternalStorageDirectory().getPath() + "/Download/test3.mov";
     private String imagePath1 = Environment.getExternalStorageDirectory().getPath() + "/Download/test1.png";
     private String imagePath2 = Environment.getExternalStorageDirectory().getPath() + "/Download/test2.png";
 

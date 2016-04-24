@@ -19,7 +19,7 @@ public class Album {
 
     public boolean hasVideo() {
         String suffix = getSuffix(path);
-        return suffix.equals("mp4") || suffix.equals("mpeg");
+        return suffix.equals("mp4") || suffix.equals("mpeg") || suffix.equals("mov");
     }
 
     public boolean hasImage() {
