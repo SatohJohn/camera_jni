@@ -1,20 +1,20 @@
 #include <jni.h>
 #include <stdlib.h>
 
-static const int MAX_FRAME_BUFFER = 6;
-static const int MAX_FRAME_MATCH = 64;
-static unsigned int* g_FrameBuffer[MAX_FRAME_BUFFER];
-static unsigned int* g_FixedFrame;
-static unsigned char* g_YFrameBuffer[MAX_FRAME_BUFFER];
-static unsigned char* g_FixedYFrame;
-static unsigned short* g_FixedFrameCount;
-static unsigned short* g_SubFrameBuffer = NULL;
-static int g_FrameCount = 0;
-static int g_FrameIndex = 0;
+static const int MAX_FRAME_BUFFER = 8;
+static const int MAX_FRAME_MATCH = 32;
+static unsigned int*   g_FrameBuffer[MAX_FRAME_BUFFER];
+static unsigned char*  g_YFrameBuffer[MAX_FRAME_BUFFER];
+static unsigned char*  g_FixedYFrame;
+static int g_FrameIndex  = 0;
 static int g_ImageLength = 0;
-static int g_ImageWidth = 0;
+static int g_ImageWidth  = 0;
 static int g_ImageHeight = 0;
 
+struct BGRA
+{
+    unsigned char B, G, R, A;
+};
 // yuv→argb 変換
 extern "C" void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobject obj, jintArray rgbArray, jbyteArray yuvArray, int width, int height)
 {
@@ -84,13 +84,6 @@ extern "C" void Java_com_example_hellojni_HelloJni_initiaizeGraphics(JNIEnv* env
         g_FrameBuffer[i] = new unsigned int[width*height];
         g_YFrameBuffer[i] = new unsigned char[width*height];
     }
-    g_FixedFrame = new unsigned int[width*height];
-    g_FixedYFrame = new unsigned char[width*height];
-    g_FixedFrameCount = new unsigned short[width*height];
-
-    memset(g_FixedFrame,0,g_ImageLength*sizeof(unsigned int) );
-    memset(g_FixedYFrame,0,g_ImageLength*sizeof(unsigned char) );
-    memset(g_FixedFrameCount,0,g_ImageLength*sizeof(unsigned short) );
 }
 
 extern "C" void Java_com_example_hellojni_HelloJni_releaseGraphics(JNIEnv* env, jobject obj)
@@ -103,9 +96,7 @@ extern "C" void Java_com_example_hellojni_HelloJni_releaseGraphics(JNIEnv* env, 
         delete[] g_YFrameBuffer[i];
         g_YFrameBuffer[i] = NULL;
     }
-    delete[] g_FixedFrame;
     delete[] g_FixedYFrame;
-    delete[] g_FixedFrameCount;
 }
 
 extern "C" void Java_com_example_hellojni_HelloJni_updateFrame(JNIEnv* env, jobject obj, jintArray rgbArray, jbyteArray yuvArray) {
@@ -120,6 +111,7 @@ extern "C" void Java_com_example_hellojni_HelloJni_updateFrame(JNIEnv* env, jobj
         int match[MAX_FRAME_MATCH] = {};
         int max = 0;
         int max_index = g_FrameIndex;
+
         for (int j = 0; j < MAX_FRAME_BUFFER; ++j) {
             int value = g_YFrameBuffer[j][i] >> 3;
             match[value]++;
@@ -130,29 +122,63 @@ extern "C" void Java_com_example_hellojni_HelloJni_updateFrame(JNIEnv* env, jobj
             }
         }
         rgbImg[i] = g_FrameBuffer[max_index][i];
+/*
+        if( max_index != g_FrameIndex )
+        {
+            int prev_index = max_index-1;
+            int next_index = max_index+1;
+            if( prev_index < 0) prev_index = MAX_FRAME_BUFFER-1;
+            if( next_index >= MAX_FRAME_BUFFER ) next_index = 0;
 
-//        if (g_FixedFrameCount[i] >= 20)
-//        {
-//            rgbImg[i] = g_FixedFrame[i];
-//            ++g_FixedFrameCount[i];
-//            if( g_FixedFrameCount[i] >= 30)
-//                g_FixedFrameCount[i] = 0;
-//
-//        }
-//        else if( abs( g_FixedYFrame[i] - g_YFrameBuffer[max_index][i]) > 64 )
-//        {
-//            g_FixedYFrame[i] = g_FrameBuffer[max_index][i];
-//            rgbImg[i] = g_FrameBuffer[max_index][i];
-//            g_FixedYFrame[i] = g_YFrameBuffer[max_index][i];
-//            g_FixedFrameCount[i] = 0;
-//        }
-//        else
-//        {
-//            rgbImg[i] = g_FrameBuffer[max_index][i];
-//            g_FixedFrame[i] = rgbImg[i];
-//            g_FixedFrameCount[i]++;
-//        }
+            int color = 0;
+            BGRA* cc;
+            int rgb[3] = {};
+            cc = (BGRA*)&g_FrameBuffer[prev_index][i];
+            rgb[0] += cc->R;
+            rgb[1] += cc->G;
+            rgb[2] += cc->B;
+
+            cc = (BGRA*)&g_FrameBuffer[max_index][i];
+            rgb[0] += cc->R*2;
+            rgb[1] += cc->G*2;
+            rgb[2] += cc->B*2;
+
+            cc = (BGRA*)&g_FrameBuffer[next_index][i];
+            rgb[0] += cc->R;
+            rgb[1] += cc->G;
+            rgb[2] += cc->B;
+
+            rgb[0] /= 4;
+            rgb[1] /= 4;
+            rgb[2] /= 4;
+            BGRA* a=(BGRA*)&rgbImg[i];
+            a->R = rgb[0];
+            a->G = rgb[1];
+            a->B = rgb[2];
+        }
+ */
     }
+/*
+    for( int i=0; i<g_ImageLength; ++i) {
+        int color = 0;
+        BGRA* cc;
+        int rgb[3] = {};
+        for (int j = 0; j < MAX_FRAME_BUFFER; ++j)
+        {
+            cc = (BGRA*)&g_FrameBuffer[j][i];
+            rgb[0] += cc->R;
+            rgb[1] += cc->G;
+            rgb[2] += cc->B;
+        }
+        rgb[0] /= MAX_FRAME_BUFFER;
+        rgb[1] /= MAX_FRAME_BUFFER;
+        rgb[2] /= MAX_FRAME_BUFFER;
+        BGRA* a=(BGRA*)&rgbImg[i];
+        a->R = rgb[0];
+        a->G = rgb[1];
+        a->B = rgb[2];
+    }
+*/
 
     if (++g_FrameIndex >= MAX_FRAME_BUFFER) {
         g_FrameIndex = 0;
