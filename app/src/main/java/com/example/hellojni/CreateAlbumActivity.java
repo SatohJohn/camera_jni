@@ -61,7 +61,7 @@ public class CreateAlbumActivity extends Activity {
                 layouts.get(layoutCount).addView(resource);
             } else {
                 ImageView imageView = new ImageView(this);
-                imageView.setImageResource(R.drawable.camera_icon);
+                imageView.setImageResource(R.drawable.camera_icon_02);
                 imageView.setScaleType(ImageView.ScaleType.CENTER);
                 imageView.setOnClickListener(new CameraView(this, layoutCount));
                 imageView.setBackgroundResource(R.drawable.create_album_bgi_01);
@@ -80,9 +80,15 @@ public class CreateAlbumActivity extends Activity {
 
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(context, HelloJni.class);
-            intent.putExtra("shotNumber", viewNumber);
-            context.startActivity(intent);
+            if (viewNumber == 4) {
+                Intent intent = new Intent(context, MovieActivity.class);
+                intent.putExtra("shotNumber", viewNumber);
+                context.startActivity(intent);
+            } else {
+                Intent intent = new Intent(context, HelloJni.class);
+                intent.putExtra("shotNumber", viewNumber);
+                context.startActivity(intent);
+            }
         }
     }
 
