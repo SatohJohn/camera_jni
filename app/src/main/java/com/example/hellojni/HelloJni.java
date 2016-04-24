@@ -98,6 +98,13 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             return false;
         }
         mTouch = true;
+        if( mCamera != null ) {
+            mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mCamera.release();
+            mCamera = null;
+        }
+
         final String SAVE_DIR = getString(R.string.directory_name);
         File file = new File(Environment.getExternalStorageDirectory().getPath()  + "/" + SAVE_DIR);
         try{
@@ -125,8 +132,6 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             e.printStackTrace();
         }
 
-        releaseGraphics();
-
         ContentValues values = new ContentValues();
         ContentResolver contentResolver = getContentResolver();
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
@@ -136,6 +141,8 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
         Intent intent = new Intent(this, CreateAlbumActivity.class);
         intent.putExtra("fileName", AttachName);
+        releaseGraphics();
+
         startActivity(intent);
         return true;
     }
@@ -188,6 +195,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int indent, int i1, int i2) {
+        if( mCamera == null ) return;
         mCamera.stopPreview();
         // プレビュー画面のサイズ設定
         Camera.Parameters params = mCamera.getParameters();
@@ -210,10 +218,12 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        mCamera.stopPreview();
-        mCamera.setPreviewCallback(null);
-        mCamera.release();
-        mCamera = null;
+        if( mCamera != null ) {
+            mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mCamera.release();
+            mCamera = null;
+        }
         releaseGraphics();
     }
 
