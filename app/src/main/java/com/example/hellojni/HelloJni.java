@@ -93,6 +93,10 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.d("TouchEvent", "X:" + event.getX() + ",Y:" + event.getY());
+        if (event.getX() > DISP_WIDTH / 2)
+        {
+            return true;
+        }
         if (mTouch == true)
         {
             return false;
