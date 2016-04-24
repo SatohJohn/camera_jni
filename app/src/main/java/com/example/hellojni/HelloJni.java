@@ -34,8 +34,8 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.View;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -74,12 +74,21 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hello_jni_activity);
+        setContentView(R.layout.hello_jni_activity);
         SurfaceView preview = (SurfaceView) findViewById(R.id.preview_id);
         mHolder = preview.getHolder();
         mHolder.addCallback(this);
         mTouch = false;
         shotNumber = getIntent().getIntExtra("shotNumber", 0);
+        ImageView imageView = (ImageView) findViewById(R.id.movie);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HelloJni.this, MovieActivity.class);
+                intent.putExtra("shotNumber", shotNumber);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

@@ -3,9 +3,12 @@ package com.example.hellojni;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -82,9 +85,9 @@ public class CreateAlbumActivity extends Activity {
         if (album.hasImage()) {
             ImageView imageView = new ImageView(this);
             File file = new File(album.path);
-            if (file.exists()) {
-                imageView.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));
-            }
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+            imageView.setImageBitmap(bitmap);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             return imageView;
         } else if (album.hasVideo()) {
             VideoView videoView = new VideoView(this);

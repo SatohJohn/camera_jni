@@ -29,5 +29,8 @@
     <activity android:name=".HelloJni"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
         android:screenOrientation="landscape"/>
+    <activity android:name=".MovieActivity"
+        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+        android:screenOrientation="landscape"/>
   </application>
 </manifest>

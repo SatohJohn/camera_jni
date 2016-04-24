@@ -14,5 +14,84 @@
         android:scaleType="centerInside"
         android:adjustViewBounds="true" />
 
-    <include layout="@layout/content_create_album_01"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:background="@drawable/create_album_bgi"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="200dp"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:layout_height="100dp"
+                android:id="@+id/content_create_album_layout_01">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/camera"
+                    android:scaleType="centerInside"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="200dp"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:layout_height="100dp"
+                android:id="@+id/content_create_album_layout_02">
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="200dp"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:layout_height="200dp"
+                android:id="@+id/content_create_album_layout_03">
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:layout_height="200dp"
+                android:id="@+id/content_create_album_layout_04">
+                <TextView
+                    android:id="@+id/template_create_album_list_image_04"
+                    android:layout_width="0dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="hogehoge"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="200dp"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:layout_height="100dp"
+                android:id="@+id/content_create_album_layout_05">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:layout_height="100dp"
+                android:id="@+id/content_create_album_layout_06">
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>
