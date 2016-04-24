@@ -76,6 +76,21 @@ extern "C" void Java_com_example_hellojni_HelloJni_yuvtoargb(JNIEnv* env, jobjec
 
 extern "C" void Java_com_example_hellojni_HelloJni_initiaizeGraphics(JNIEnv* env, jobject obj, int width, int height)
 {
+    for (int i = 0; i < MAX_FRAME_BUFFER; ++i) {
+        if (g_FrameBuffer[i] != NULL) {
+            delete[] g_FrameBuffer[i];
+            g_FrameBuffer[i] = NULL;
+        }
+
+        if (g_YFrameBuffer[i] != NULL) {
+            delete[] g_YFrameBuffer[i];
+            g_YFrameBuffer[i] = NULL;
+        }
+    }
+    if( g_FixedYFrame != NULL ) {
+        delete[] g_FixedYFrame;
+        g_FixedYFrame = NULL;
+    }
     g_ImageLength = width*height;
     g_ImageWidth = width;
     g_ImageHeight = height;
@@ -88,15 +103,21 @@ extern "C" void Java_com_example_hellojni_HelloJni_initiaizeGraphics(JNIEnv* env
 
 extern "C" void Java_com_example_hellojni_HelloJni_releaseGraphics(JNIEnv* env, jobject obj)
 {
-    for (int i = 0; i < MAX_FRAME_BUFFER; ++i)
-    {
-        delete[] g_FrameBuffer[i];
-        g_FrameBuffer[i] = NULL;
+    for (int i = 0; i < MAX_FRAME_BUFFER; ++i) {
+        if (g_FrameBuffer[i] != NULL) {
+            delete[] g_FrameBuffer[i];
+            g_FrameBuffer[i] = NULL;
+        }
 
-        delete[] g_YFrameBuffer[i];
-        g_YFrameBuffer[i] = NULL;
+        if (g_YFrameBuffer[i] != NULL) {
+            delete[] g_YFrameBuffer[i];
+            g_YFrameBuffer[i] = NULL;
+        }
     }
-    delete[] g_FixedYFrame;
+    if( g_FixedYFrame != NULL ) {
+        delete[] g_FixedYFrame;
+        g_FixedYFrame = NULL;
+    }
 }
 
 extern "C" void Java_com_example_hellojni_HelloJni_updateFrame(JNIEnv* env, jobject obj, jintArray rgbArray, jbyteArray yuvArray) {
