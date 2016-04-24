@@ -12,8 +12,9 @@ import java.util.List;
  * Created by satohjohn on 16/04/24.
  */
 public class AlbumService {
-    private String moviewPath = Environment.getExternalStorageDirectory().getPath() + "/Movies/preload_xperia_hd2.mp4";
-    private String imagePath = Environment.getExternalStorageDirectory().getPath() + "/image/alpha_amalfi_coast.jpg";
+    private String moviewPath1 = Environment.getExternalStorageDirectory().getPath() + "/Download/test3.mp4";
+    private String imagePath1 = Environment.getExternalStorageDirectory().getPath() + "/Download/test1.png";
+    private String imagePath2 = Environment.getExternalStorageDirectory().getPath() + "/Download/test2.png";
 
     /**
      * dirPathに存在するファイルを削除する
@@ -46,9 +47,9 @@ public class AlbumService {
         }
         // 5は決め打ち
         List<Album> albums = new ArrayList<>();
-        albums.add(new Album(""));
-        albums.add(new Album(""));
-        albums.add(new Album(""));
+        albums.add(new Album(imagePath1));
+        albums.add(new Album(imagePath2));
+        albums.add(new Album(moviewPath1));
         albums.add(new Album(""));
         albums.add(new Album(""));
         if (!directory.exists()) {
@@ -56,7 +57,9 @@ public class AlbumService {
         } else {
             // fileのリスト
             for (File file :directory.listFiles()) {
-                albums.set(getAlbumNum(file.getName()), new Album(file.getPath()));
+                if (albums.get(getAlbumNum(file.getName())).isNotHaveBoth()) {
+                    albums.set(getAlbumNum(file.getName()), new Album(file.getPath()));
+                }
             }
         }
 
