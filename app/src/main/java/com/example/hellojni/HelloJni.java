@@ -125,6 +125,8 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
             e.printStackTrace();
         }
 
+        releaseGraphics();
+
         ContentValues values = new ContentValues();
         ContentResolver contentResolver = getContentResolver();
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
