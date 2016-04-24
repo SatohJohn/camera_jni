@@ -212,6 +212,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         mCamera.setPreviewCallback(null);
         mCamera.release();
         mCamera = null;
+        releaseGraphics();
     }
 
     @Override
