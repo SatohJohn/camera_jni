@@ -63,7 +63,6 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
     private SurfaceHolder mHolder = null;
     private SurfaceTexture mSurface = null;
     private int[] mGrayImg = null;
-    private int[] mScaleImg = null;
     private Bitmap mBitmap = null;
 
     private long mTimestart = System.currentTimeMillis();
@@ -169,7 +168,6 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
         }
 
         mGrayImg   = new int[PREVIEW_WIDTH * PREVIEW_HEIGHT];
-        mScaleImg  = new int[DISP_WIDTH * DISP_HEIGHT];
         mBitmap    = Bitmap.createBitmap(DISP_WIDTH, DISP_HEIGHT, Bitmap.Config.ARGB_8888);
         initiaizeGraphics(PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
