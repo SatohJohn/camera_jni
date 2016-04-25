@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="AppTheme" parent="@android:style/Theme.Light">
+        <!-- これじゃない背景色が変わらない -->
+        <item name="android:windowTitleBackgroundStyle">@style/CustomActionBarBackGround</item>
+        <item name="android:windowTitleStyle">@style/CustomActionBatTitle</item>
+        <item name="android:windowTitleSize">40dp</item>
+    </style>
+
+    <style name="CustomActionBarBackGround">
+        <item name="android:background">@color/titleBackgroundColor</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="CustomActionBatTitle" parent="@android:style/TextAppearance">
+        <item name="android:textSize">20dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+</resources>

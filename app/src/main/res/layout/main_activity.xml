@@ -4,23 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity"
-    android:background="@android:color/background_light">
+    tools:context=".MainActivity">
+
+    <include layout="@layout/title_bar" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/header_main"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true" />
-    <ImageView
+        android:contentDescription="@string/app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/header_01"
         android:scaleType="centerInside"
         android:adjustViewBounds="true"/>
 
-    <ImageButton
+    <Button
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:id="@+id/main_activity_select_album_design"
@@ -28,7 +24,7 @@
         android:background="@drawable/btn_01_select_album_design"
         android:paddingTop="50dp" />
 
-    <ImageButton
+    <Button
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:id="@+id/main_activity_create_album"

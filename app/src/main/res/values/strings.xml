@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ぼく,ﾊﾟｼｬ男</string>
+    <string name="header_app_name">ぼく、パシャ男</string>
     <string name="directory_name">pashao</string>
     <string name="next_button_to_show_album">作る</string>
     <string name="next_button_to_create_album">見る</string>

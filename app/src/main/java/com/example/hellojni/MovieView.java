@@ -1,116 +1,93 @@
 package com.example.hellojni;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaRecorder;
-import android.os.Environment;
+import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class MovieView extends SurfaceView implements SurfaceHolder.Callback {
-    private SurfaceHolder surfaceholder;  //ホルダー
-    private MediaRecorder recorder;//メディアレコーダー
+import com.example.hellojni.service.FileService;
 
-    boolean mTouch = false;
-    int     shotNumber = 0;
-    String   mFullpath = "";
+public class MovieView extends SurfaceView implements SurfaceHolder.Callback {
+    private SurfaceHolder surfaceholder;
+    private MediaRecorder recorder;
+
+    FileService fileService = new FileService();
+    boolean isTouch = false;
+    int shotNumber = 0;
+    String fullPath = "";
 
     //コンストラクタ
-    public MovieView(Context context, int _shotNumber) {
-        super(context);
+    public MovieView(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
 
         Log.d("aaaaaaaaaa", "movieView");
         //サーフェイスホルダーの生成
-        surfaceholder=getHolder();
+        surfaceholder = getHolder();
         surfaceholder.addCallback(this);
 
         //プッシュバッファの指定
         surfaceholder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-        shotNumber = _shotNumber;
-
-        mTouch = false;
+        isTouch = false;
         Log.d("aaaaaaaaaa", "movieViewFinish");
     }
 
     //サーフェイス生成イベントの処理
+    @Override
     public void surfaceCreated(SurfaceHolder surfaceholder) {
-        try {
-            Log.d("aaaaaaaaaa", "1");
-            //録画の開始(3)
-            recorder=new MediaRecorder();
-            recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-            recorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
-            final String SAVE_DIR = "pashao";
-            Log.d("aaaaaaaaaa", "2");
-            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + SAVE_DIR);
-            try{
-                if(!file.exists()){
-                    file.mkdir();
-                }
-            }catch(SecurityException e){
-                e.printStackTrace();
-                throw e;
-            }
-            Log.d("aaaaaaaaaa", file.getAbsolutePath());
-            Date mDate = new Date();
-            SimpleDateFormat fileNameDate = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            //File dir=Environment.getExternalStorageDirectory();
-            String fileName = fileNameDate.format(mDate)  + "_" + shotNumber + ".mp4";
-            String AttachName = file.getAbsolutePath() + "/" + fileName;
+        recorder = new MediaRecorder();
+        recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+        recorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
 
-            Log.d("aaaaaaaaaa", AttachName);
-            recorder.setOutputFile(AttachName);
-            recorder.setPreviewDisplay(surfaceholder.getSurface());
+        fileService.createDirectoryIfNotExist();
+        String fileName = fileService.createMovieFileName(shotNumber);
+        String AttachName = fileService.getSaveDir() + fileName;
+
+        recorder.setOutputFile(AttachName);
+        recorder.setPreviewDisplay(surfaceholder.getSurface());
+        Log.d("aaaaaaaaaa", AttachName);
+        try {
+            //録画の開始(3)
             recorder.prepare();
             recorder.start();
-
-            mFullpath = AttachName;
             Log.d("aaaaaaaaaa", "movie start");
         } catch (Exception e) {
-            android.util.Log.e("",e.toString());
+            Log.e("movie", e.toString());
         }
+        fullPath = AttachName;
     }
 
-    public String getFullpath()
-    {
-        return mFullpath;
+    public String getFullPath() {
+        return fullPath;
     }
 
-        //サーフェイス変更イベントの処理
-    public void surfaceChanged(SurfaceHolder surfaceholder,
-                               int format,int w,int h) {
+    //サーフェイス変更イベントの処理
+    @Override
+    public void surfaceChanged(SurfaceHolder surfaceholder, int format, int w, int h) {
     }
 
     //サーフェイス解放イベントの処理
+    @Override
     public void surfaceDestroyed(SurfaceHolder surfaceholder) {
-        try {
-            Log.d("aaaaaaaaaa", "movie finish start!!");
-            //録音の停止(4)
-            recorder.stop();
-            recorder.release();
-
-            Log.d("aaaaaaaaaa", "movie finish!!");
-        } catch (Exception e) {
-        }
+        Log.d("aaaaaaaaaa", "movie finish start!!");
+        movieFinish();
+        Log.d("aaaaaaaaaa", "movie finish!!");
     }
 
     // 録画の中止
-    public void movieFinsih()
-    {
-        try {
+    public void movieFinish() {
+        if (recorder != null) {
             //録音の停止(4)
             recorder.stop();
             recorder.release();
-            Log.d("aaaaaaaaaa", "movie finish bb!!");
-        } catch (Exception e) {
+            recorder = null;
         }
     }
+
+    void setShotNumber(int shotNumber) {
+        this.shotNumber = shotNumber;
+    }
+
 }
