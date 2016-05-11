@@ -163,7 +163,7 @@ public class HelloJni extends Activity implements SurfaceHolder.Callback, Camera
 		}
 
 		mGrayImg = new int[PREVIEW_WIDTH * PREVIEW_HEIGHT];
-		mBitmap = Bitmap.createBitmap(DISP_WIDTH, DISP_HEIGHT, Bitmap.Config.ARGB_8888);
+		mBitmap = Bitmap.createBitmap(PREVIEW_WIDTH, PREVIEW_HEIGHT, Bitmap.Config.ARGB_8888);
 		initiaizeGraphics(PREVIEW_WIDTH, PREVIEW_HEIGHT);
 
 		try {
